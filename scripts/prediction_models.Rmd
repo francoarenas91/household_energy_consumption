@@ -35,7 +35,7 @@ house_static_data <- read_parquet("https://intro-datascience.s3.us-east-2.amazon
   rename(county_id=in.county)
 temperature <-read_csv("~/GitHub/household_energy_consumption/data/temperature.csv") %>% 
   rename(time=date_time)
-data <-read_csv("C:/Users/franc/OneDrive/MADS/IST687/final_project/electricity_consumption.csv") %>%
+data <-read_csv("C:/Users/usuario/OneDrive/MADS/IST687/final_project/electricity_consumption.csv") %>%
   # sample_frac(.20) %>% 
   left_join(house_static_data,by="bldg_id") %>% 
   left_join(temperature,by=c("county_id","time")) %>% #join with encoded data
