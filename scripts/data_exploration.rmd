@@ -17,7 +17,7 @@ rm(list = ls())
 
 ##carga paquetes
 
-PAQUETES <- c("dplyr","tidyverse","ggplot2","here","arrow","lubridate")
+PAQUETES <- c("dplyr","tidyverse","ggplot2","here","arrow","lubridate","readxl")
 
 for (el in PAQUETES){
   if (!require(el, character.only = TRUE)) {
@@ -40,7 +40,8 @@ setwd(path)
 
 selected_features <- read_excel(paste0(path,"/data/data_dictionary.xlsx"),sheet=3) %>% pull()
 
-house_static_data <- read_parquet("https://intro-datascience.s3.us-east-2.amazonaws.com/SC-data/static_house_info.parquet") %>% 
+house_static_data <- read_parquet("https://intro-datascience.s3.us-east-2.amazonaws.com/SC-data/static_house_info.parquet")
+house_static_data <-house_static_data %>% 
   select(bldg_id,selected_features) %>% 
   mutate(county_id=house_static_data$in.county)
 
@@ -91,18 +92,19 @@ temperature %>%
 visualize how energy consumtion changes with temperature for specific houses
 ```{r}
 plot_data <-read_csv("C:/Users/franc/OneDrive/MADS/IST687/final_project/electricity_consumption.csv") %>%
-  # sample_frac(.20) %>% 
   left_join(house_static_data,by="bldg_id") %>% 
   left_join(temperature,by=c("county_id","time")) %>% #join with encoded data
   select(c(bldg_id,temperature,total_electricity))
 
 
-for (house in plot_data$bldg_id[1:5]){
+house = plot_data$bldg_id[1]
   plot_data %>% 
-    filter(bldg_id==house) %>% 
+    filter(bldg_id==as.character(house)) %>% 
     ggplot(aes(x=temperature,y=total_electricity)) +
-    geom_point()
-}
+    geom_point() +
+    theme_classic()+
+    ylab("Hourly electricity consumption (kWh)")
+
 ```
 the same for a county
 ```{r}

@@ -75,7 +75,7 @@ Run a quick model to get the feature importance on the sample
 # registerDoParallel(cores = 4)
 
 # Train the model
-rf_model <- randomForest(total_electricity ~ ., data=data, ntree=20, mtry=2, nodesize=20,do.trace=5)
+rf_model <- randomForest(total_electricity ~ ., data=data, ntree=20, mtry=2, nodesize=20,do.trace=1)
 end_time <- Sys.time()
 
 # Check out the feature importance
@@ -99,9 +99,23 @@ selected_importance_names <- selected_importance %>% rownames()
 
 saveRDS(selected_importance_names,"~/GitHub/household_energy_consumption/selected_importance_names.RDS")
 
+selected_importance <- selected_importance %>%
+  mutate(names = factor(selected_importance_names, 
+                        levels = selected_importance_names[order(importance_perc, decreasing = TRUE)]))
+
+# Now plot with ggplot2
+plot<- ggplot(selected_importance, aes(x = names, y = importance_perc)) +
+  geom_col() +
+  coord_flip() +  # This will flip the coordinates to make the bars horizontal
+  theme_classic() +
+  labs(y = "Importance Percentage", x = "Features") + 
+  geom_col(fill = "deepskyblue4")
+
+ggsave("~/GitHub/household_energy_consumption/plots/feature_importance_1.png", plot, width = 10, height = 8, dpi = 300)
+
 ```
 
-
+plot the feature importance
 
 
 

@@ -110,7 +110,10 @@ predictions <- predict(lm_model, newdata = dataTest)
 # Calculate performance metrics on the test set
 postResample(pred = predictions, obs = dataTest$total_electricity)
 
+saveRDS(lm_model,"C:/Users/franc/OneDrive/MADS/IST687/final_project/lm_model.rds")
+
 ```
+
 let's try adding a square term in temperature to account for non linearities
 ```{r}
 data_squared <- data_times %>% 
@@ -126,6 +129,7 @@ dataTest  <- data_squared[-trainIndex,]
 # Train a linear regression model on the training set
 sq_lm_model <- train(total_electricity ~ ., data = dataTrain, method = "lm", trControl = train_control)
 
+
 # Print the results
 summary(sq_lm_model)
 
@@ -134,6 +138,9 @@ predictions <- predict(sq_lm_model, newdata = dataTest)
 
 # Calculate performance metrics on the test set
 postResample(pred = predictions, obs = dataTest$total_electricity)
+
+saveRDS(sq_lm_model,"C:/Users/franc/OneDrive/MADS/IST687/final_project/sq_lm_model.rds")
+
 
 ```
 the square term is significant, nonetheless it does not significantly improve the model
@@ -151,6 +158,10 @@ data_pred <- data_times %>%
 predictions <- predict(lm_model, newdata = data_pred)
 
 # Convert log-scale predictions back to original scale
-data_pred$total_electricity = exp(predictions)
+data_pred$total_electricity_pred = exp(predictions)
+data_pred$total_electricity = exp(data_pred$total_electricity)
+
+#save the predictions for the shiny app
+saveRDS(data_pred,"~/GitHub/household_energy_consumption/output/predictions.rds")
 ```
 
