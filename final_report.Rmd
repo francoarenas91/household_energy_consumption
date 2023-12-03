@@ -473,11 +473,11 @@ Our analysis projects an average increase in electricity demand of 12.5% when te
 The day-of-the-week analysis reveals a more nuanced picture. The increase in demand is expected to be more pronounced on Saturdays and Fridays, likely due to heightened activities and occupancy during these days. In contrast, the smallest increase is anticipated on Wednesdays, which might be attributed to more stable routines and possibly lower occupancy or activity levels midweek.
 By day of the week, the increase would be higher on saturday and friday and lower on wednesday. 
 
-![Your Plot Description](plots/weekly_increase_plot.png)
+![Electricity consumption increase by day of the week](plots/weekly_increase_plot.png)
 
 The hourly analysis provides further insights. The peak increase in electricity demand is projected around 18:00 hours (6 PM), coinciding with the typical return of occupants to their homes and the consequent rise in the usage of electrical appliances and air conditioning systems. Conversely, the lowest increase is expected around 10:00 in the morning, a period generally characterized by lower occupancy and reduced electrical usage in residential settings.
 
-![Your Plot Description](plots/hourly_increase_plot.png)
+![Electricity consumption increase by hour](plots/hourly_increase_plot.png)
 
 # 6. Approaches to reduce energy demand
 
