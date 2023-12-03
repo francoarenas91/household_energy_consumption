@@ -1,5 +1,5 @@
 ---
-title: "IST 687 final project report"
+title: "IST 687 final project technical report"
 author: "Francisco Franco Arenas"
 date: "2023-11-27"
 output:
@@ -153,12 +153,10 @@ An initial observation from our exploratory analysis indicates a positive correl
 
 ## Feature importance
 
-To assess the importance of each house feature in energy consumption, we merged the static and dynamic data, selecting a sample of 5% of the rows to run a random forest model. This approach helped us determine the importance of each feature in explaining electricity consumption. The most significant features identified are XXX. For further analysis, we only selected features with an importance higher than 0.95%.
+To assess the importance of each house feature in energy consumption, we merged the static and dynamic data, selecting a sample of 5% of the rows to run a random forest model. This approach helped us determine the importance of each feature in explaining electricity consumption. The most significant features identified are hour, the floor area and the vacancy status. For further analysis, we only selected features with an importance higher than 0.95%.
 
+![Your Plot Description](plots/feature_importance_1.png)
 
-```{r}
-#CODE HERE
-```
 
 ## Feature engineering
 
@@ -298,7 +296,9 @@ house_data %>%
   ) -> encoded_house_data
 ```
 
-With the engineered features, we replicate the previous random forest to get more precise insights on the feature importance:
+With the engineered features, we replicate the previous random forest to get more precise insights on the feature importance. The most important features remain the same. The ACH50 insulation is the only category in wich changes can be made to affect electricity consumption, as most other important features are inmutabe (such as floor area or number of rooms).
+
+![Your Plot Description](plots/feature_importance_1.png)
 
 # 4. Building a Model for Prediction
 
@@ -457,6 +457,17 @@ Another potential approach is using a tree-based method, such as random forest r
 
 
 # 5. Forecast of future energy demand 
+
+Our analysis projects an average increase in electricity demand of 12.5% when temperatures rise by 5 degrees Celsius across the board. This projection underscores the significant impact of temperature on energy consumption patterns.
+
+The day-of-the-week analysis reveals a more nuanced picture. The increase in demand is expected to be more pronounced on Saturdays and Fridays, likely due to heightened activities and occupancy during these days. In contrast, the smallest increase is anticipated on Wednesdays, which might be attributed to more stable routines and possibly lower occupancy or activity levels midweek.
+By day of the week, the increase would be higher on saturday and friday and lower on wendesenay. 
+
+![Your Plot Description](plots/weekly_increase_plot.png)
+
+The hourly analysis provides further insights. The peak increase in electricity demand is projected around 18:00 hours (6 PM), coinciding with the typical return of occupants to their homes and the consequent rise in the usage of electrical appliances and air conditioning systems. Conversely, the lowest increase is expected around 10:00 in the morning, a period generally characterized by lower occupancy and reduced electrical usage in residential settings.
+
+![Your Plot Description](plots/hourly_increase_plot.png)
 
 # 6. Approaches to reduce energy demand
 

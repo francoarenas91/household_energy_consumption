@@ -165,3 +165,61 @@ data_pred$total_electricity = exp(data_pred$total_electricity)
 saveRDS(data_pred,"~/GitHub/household_energy_consumption/output/predictions.rds")
 ```
 
+
+explore the predictions
+```{r}
+data_pred<-readRDS("~/GitHub/household_energy_consumption/output/predictions.rds")
+
+data_pred %>% 
+  mutate(increase = total_electricity_pred - total_electricity) %>% 
+  mutate(increase_perct = (increase/total_electricity)*100) -> data_pred_inc
+avg_inc <- sum(data_pred_inc$increase)/sum(data_pred_inc$total_electricity)*100
+
+data_pred_inc %>%
+  group_by(day_of_week) %>%
+  summarise(
+    increase = sum(increase),
+    total_electricity = sum(total_electricity)
+  ) %>%
+  mutate(increase_perct = (increase / total_electricity) * 100) %>%
+  mutate(day = case_when(
+    day_of_week == 1 ~ "Monday",
+    day_of_week == 2 ~ "Tuesday",
+    day_of_week == 3 ~ "Wednesday",
+    day_of_week == 4 ~ "Thursday",
+    day_of_week == 5 ~ "Friday",
+    day_of_week == 6 ~ "Saturday",
+    day_of_week == 7 ~ "Sunday"
+  )) %>%
+  mutate(day = factor(day, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))) %>%
+  select(increase_perct, day) %>%
+  ggplot(aes(x = day, y = increase_perct)) +
+  geom_col(fill = "deepskyblue4") +
+  labs(x = "Day of the Week", y = "Increase Percentage", title = "Weekly Increase in Electricity Usage") +
+  geom_text(aes(label = paste0(round(increase_perct, 1),"%")), vjust = -0.5) +
+  theme_classic() -> weekly_increase_plot
+
+ggsave("~/GitHub/household_energy_consumption/plots/weekly_increase_plot.png",  weekly_increase_plot, width = 10, height = 8, dpi = 300)
+
+```
+```{r}
+data_pred_inc %>%
+  group_by(hour) %>%
+  summarise(
+    increase = sum(increase),
+    total_electricity = sum(total_electricity)
+  ) %>%
+  mutate(increase_perct = (increase / total_electricity) * 100) %>% 
+  select(increase_perct, hour) %>%
+  ggplot(aes(x = hour, y = increase_perct)) +
+  geom_col(fill = "deepskyblue4") +
+  labs(x = "Hour", y = "Increase Percentage", title = "Hourly Increase in Electricity Usage") +
+  geom_text(aes(label = paste0(round(increase_perct, 1),"%")), vjust = -0.5,size = 2.7) +
+  theme_classic() -> hourly_increase_plot
+
+hourly_increase_plot
+
+ggsave("~/GitHub/household_energy_consumption/plots/hourly_increase_plot.png",  hourly_increase_plot, width = 10, height = 8, dpi = 300)
+
+```
+

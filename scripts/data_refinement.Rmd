@@ -53,6 +53,7 @@ temperature <-read_csv("~/GitHub/household_energy_consumption/data/temperature.c
 ```
 
 
+
 feature engineering
 ```{r}
 
@@ -67,7 +68,11 @@ encoded_house_data %>%
   select(-in.clothes_dryer) %>%  #drop in.clothes drier
   mutate(infiltration_ACH50 = as.numeric(str_extract(in.infiltration, "^[^ ]*"))) %>% #is a number in reality
   select(-in.infiltration) %>% 
-  left_join(income_dictionary,by="in.income") %>% 
+  mutate(income_branch=case_when(
+    in.income == "200000+" ~ 200000,
+    in.income == "<10000" ~ 5000,
+    T ~ str_extract(in.income, "^[^-]+") %>% as.numeric()
+  )) %>% 
   select(-in.income) %>% 
   mutate(
     in.occupants=as.numeric(in.occupants),
@@ -194,7 +199,7 @@ create a df with the selected features and all the rows
 
 
 data <-read_csv("C:/Users/franc/OneDrive/MADS/IST687/final_project/electricity_consumption.csv") %>%
-  # sample_frac(.05) %>% 
+  sample_frac(.20) %>% 
   left_join(encoded_house_data,by="bldg_id") %>% 
   left_join(temperature,by=c("county_id","time"))#join with encoded data
 
@@ -207,28 +212,6 @@ data %>%
   select(-time) -> data
 
 ```
-
-
-create a df with the selected features and all the rows
-```{r}
-
-
-data <-read_csv("C:/Users/franc/OneDrive/MADS/IST687/final_project/electricity_consumption.csv") %>%
-  sample_frac(.05) %>% 
-  left_join(encoded_house_data,by="bldg_id") %>% 
-  left_join(temperature,by=c("county_id","time"))#join with encoded data
-
-data %>% 
-  select(-bldg_id,-county_id) %>% #remove the id and the county in code
-  mutate(day = day(time)) %>% 
-  mutate(day_of_week = as.numeric(factor(wday(time, label = TRUE)))) %>% 
-  filter(!is.na(temperature)) %>%  #drop the counties where I do not have the temperature
-  mutate(hour=as.numeric(hour(time))) %>% 
-  select(-time) -> data
-
-```
-
-
 
 
 
@@ -236,7 +219,6 @@ data %>%
 Run a quick model to get the feature importance on the sample
 ```{r}
 
-# registerDoParallel(cores = 4)
 
 # Train the model
 rf_model <- randomForest(total_electricity ~ ., data=data, ntree=20, mtry=2, maxnodes=20,do.trace=1)
@@ -261,7 +243,45 @@ selected_importance %>% pull(importance_perc) %>% sum()
 
 selected_importance_name_2 <- selected_importance %>% rownames()
 
-saveRDS(selected_importance_names,"~/GitHub/household_energy_consumption/selected_importance_names_2.RDS")
+saveRDS(selected_importance_name_2,"~/GitHub/household_energy_consumption/selected_importance_names_2.RDS")
+
+
+selected_importance <- selected_importance %>%
+  mutate(names = factor(selected_importance_name_2, 
+                        levels = selected_importance_name_2[order(importance_perc, decreasing = TRUE)]))
+
+# Now plot with ggplot2
+plot<- ggplot(selected_importance, aes(x = names, y = importance_perc)) +
+  geom_col() +
+  coord_flip() +  # This will flip the coordinates to make the bars horizontal
+  theme_classic() +
+  labs(y = "Importance Percentage", x = "Features") + 
+  geom_col(fill = "deepskyblue4")
+
+
+
+
+ggsave("~/GitHub/household_energy_consumption/plots/feature_importance_2.png", plot, width = 10, height = 8, dpi = 300)
+
+```
+run a linear regression to assess the coefficients
+```{r}
+# to logarits to best interpret betas
+data$total_electricity<-log(data$total_electricity)
+
+# Create a formula that includes all variables except 'in.county'
+variables <- setdiff(names(data), c("total_electricity", "in.county"))
+formula_str <- paste("total_electricity ~", paste(variables, collapse = " + "))
+
+#run the lm model with the created formula
+lm_model <- lm(formula_str, data = data)
+
+summary(lm_model)
+
+#get the baseline factors
+levels(data$factor_variable)
+
+
 
 ```
 
