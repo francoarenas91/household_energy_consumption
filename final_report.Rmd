@@ -1,7 +1,7 @@
 ---
 title: "IST 687 final project technical report"
-author: "Francisco Franco Arenas"
-date: "2023-11-27"
+author: "M003 Group 5"
+date: "2023-12-06"
 output:
   pdf_document: default
   html_document: default
@@ -33,6 +33,10 @@ setwd(path)
 ```
 
 # 1. introduction
+
+The challenge of managing and predicting energy consumption is critical. This report presents a comprehensive analysis where the primary objective is to understand and forecast the impact of rising temperatures on electricity demand, particularly during the peak month of July. The focus is on preempting potential energy shortages and blackouts that could arise from an overburdened electrical grid during an unusually hot summer.
+
+We have employed a multi-faceted approach to address this challenge, leveraging a rich dataset encompassing static house data, detailed hour-by-hour energy usage, and corresponding weather data. Through meticulous data preparation, exploratory analysis, and advanced modeling techniques, we aim to unveil the key drivers of energy consumption. This understanding will enable us to propose data-driven strategies not only to predict future energy demand under heightened temperature scenarios but also to explore avenues for energy conservation.
 
 # 2. Data reading and merging approach
 
@@ -147,15 +151,21 @@ Upon examination, both the temperature data and the household static data were f
 
 An initial observation from our exploratory analysis indicates a positive correlation between energy consumption and temperature. This trend is evident at both the individual house and county levels, suggesting a consistent pattern across different scales of data. The following visualization illustrates this correlation:
 
-```{r}
-# CODE PENDING for plot
+```{r house-plot, fig.cap="Electricity consumption at individual household level", out.width='70%', echo=FALSE}
+knitr::include_graphics("plots/house_plot.png")
 ```
+
+```{r county-plot, fig.cap="Electricity consumption at county level", out.width='70%',echo=FALSE}
+knitr::include_graphics("plots/county_plot.png")
+```
+
+
 
 ## Feature importance
 
 To assess the importance of each house feature in energy consumption, we merged the static and dynamic data, selecting a sample of 5% of the rows to run a random forest model. This approach helped us determine the importance of each feature in explaining electricity consumption. The most significant features identified are hour, the floor area and the vacancy status. For further analysis, we only selected features with an importance higher than 0.95%.
 
-![Your Plot Description](plots/feature_importance_1.png)
+![Feature importance of baseline model](plots/feature_importance_1.png)
 
 
 ## Feature engineering
@@ -298,7 +308,7 @@ house_data %>%
 
 With the engineered features, we replicate the previous random forest to get more precise insights on the feature importance. The most important features remain the same. The ACH50 insulation is the only category in wich changes can be made to affect electricity consumption, as most other important features are inmutabe (such as floor area or number of rooms).
 
-![Your Plot Description](plots/feature_importance_1.png)
+![Feature importance of refined model](plots/feature_importance_1.png)
 
 # 4. Building a Model for Prediction
 
@@ -340,7 +350,7 @@ panel_data <- pdata.frame(data, index = c("county_id", "time"))
 panel_model <- plm(total_electricity ~ temperature, 
                 data = panel_data, 
                 model = "within")
-stargazer(panel_model, type = "latex",header = FALSE)
+stargazer(panel_model, type = "latex",header = "Regression summary of panel model with fixed effects")
 
 
 ```
@@ -461,7 +471,7 @@ Another potential approach is using a tree-based method, such as random forest r
 Our analysis projects an average increase in electricity demand of 12.5% when temperatures rise by 5 degrees Celsius across the board. This projection underscores the significant impact of temperature on energy consumption patterns.
 
 The day-of-the-week analysis reveals a more nuanced picture. The increase in demand is expected to be more pronounced on Saturdays and Fridays, likely due to heightened activities and occupancy during these days. In contrast, the smallest increase is anticipated on Wednesdays, which might be attributed to more stable routines and possibly lower occupancy or activity levels midweek.
-By day of the week, the increase would be higher on saturday and friday and lower on wendesenay. 
+By day of the week, the increase would be higher on saturday and friday and lower on wednesday. 
 
 ![Your Plot Description](plots/weekly_increase_plot.png)
 
@@ -471,7 +481,23 @@ The hourly analysis provides further insights. The peak increase in electricity 
 
 # 6. Approaches to reduce energy demand
 
+Reducing electricity demand presents challenges, particularly because it often hinges on immutable characteristics such as floor area, room count, and vacancy status. Nonetheless, certain improvements can offer marginal gains in energy efficiency. For instance, enhancing ACH50 infiltration or wall insulation can make a notable difference.
+
+However, the most impactful strategy for reducing electricity consumption may lie in altering household consumption patterns. Practical measures might include reducing air conditioning usage or adjusting the set temperature. Yet, influencing consumer behavior poses significant challenges from a policy standpoint. It demands a justification for why such behavioral changes are preferable to augmenting production capacity. From our perspective, expanding production capacity, especially with the decreasing costs of renewable energy installations, appears less burdensome than enforcing specific consumption patterns.
+
+A critical caveat in our analysis is the exclusion of electricity prices. Our assessment assumes constant demand, which does not reflect the reality of fluctuating electricity prices, especially in scenarios where no new capacity is installed. As electricity becomes costlier, consumers may need to adjust their usage to manage expenses. Notably, air conditioning—one of the most price-sensitive forms of electricity consumption—may see reduced usage in response to higher prices. Additionally, increased electricity prices could make household photovoltaic production more financially viable. It is important to note that peak hours for photovoltaic production often coincide with higher temperatures, thus aligning with increased air conditioning use.
+
+In conclusion, electricity prices are crucial signals of market scarcity. Allowing these prices to provide clear signals is essential. Consequently, reforms aimed at reducing inefficiencies, liberalizing markets, and minimizing administrative and regulatory barriers are critical for the efficient functioning of the electricity market. In a scenario where the market is liberalized and prices accurately reflect demand and supply, higher prices could naturally drive new consumption patterns while encouraging increased production from both households and energy providers.
+
 # 7. Conclusion
+
+In this technical report, our comprehensive analysis of energy consumption data has yielded several critical insights. The analysis focused on understanding the drivers of electricity demand, particularly in the face of potential temperature increases during the peak month of July.
+
+One of the primary findings is that the major determinants of energy usage are fixed features of residential properties, such as floor area and room count. These immutable characteristics underscore a fundamental challenge in managing energy consumption solely through behavior modification strategies. Given this context, our recommendation leans towards expanding energy production capacity as a more viable and immediate solution to meeting increased energy demand. This approach aligns with the need for a robust and reliable energy supply, particularly during peak usage periods.
+
+Furthermore, the analysis highlighted the necessity of incorporating electricity pricing into the predictive models. The inclusion of price data would provide a more realistic and nuanced understanding of consumer behavior and energy consumption patterns. Price elasticity plays a crucial role in shaping consumer behavior, particularly in response to peak demand and pricing. Therefore, a pricing strategy could be an effective tool in managing demand, alongside other approaches.
+
+In conclusion, while consumer behavior plays a role in energy consumption, the predominant influence of fixed house attributes suggests that increasing production capacity is a pragmatic approach to address the challenges of higher energy demand. However, a comprehensive strategy that also considers dynamic pricing mechanisms would offer a more balanced and effective way to manage energy consumption patterns in the face of rising temperatures.
 
 
 # Annex 1 {#annex1}
@@ -482,3 +508,12 @@ List of preselected features using domain expertise:
 selected_features <- read_excel(paste0(path,"/data/data_dictionary.xlsx"), sheet=3) %>% pull()
 knitr::kable(data.frame(Feature = selected_features))
 ```
+
+# Annex 2 {#annex2}
+
+- **Francisco Franco Arenas:**
+  - Design, coding, and execution of the pipeline to load and merge the data.
+  - Data exploratory analysis.
+  - Feature engineering and feature importance analysis.
+  - Development of prediction models.
+  - Elaboration of the final report.

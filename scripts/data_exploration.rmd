@@ -98,12 +98,14 @@ plot_data <-read_csv("C:/Users/franc/OneDrive/MADS/IST687/final_project/electric
 
 
 house = plot_data$bldg_id[1]
-  plot_data %>% 
+house_plot <- plot_data %>% 
     filter(bldg_id==as.character(house)) %>% 
     ggplot(aes(x=temperature,y=total_electricity)) +
     geom_point() +
     theme_classic()+
     ylab("Hourly electricity consumption (kWh)")
+
+ggsave("~/GitHub/household_energy_consumption/plots/house_plot.png", house_plot, width = 10, height = 8, dpi = 300)
 
 ```
 the same for a county
@@ -119,11 +121,15 @@ plot_data <-read_csv("C:/Users/franc/OneDrive/MADS/IST687/final_project/electric
     temperature = mean(temperature)
   )
 
-
-for (county in plot_data$county_id[1:5]){
-  plot_data %>% 
+county = plot_data$county_id[1]
+county_plot<-plot_data %>% 
     filter(county_id==county) %>% 
     ggplot(aes(x=temperature,y=total_electricity)) +
-    geom_point()
-}
+    geom_point() +
+    theme_classic()+
+    ylab("Hourly electricity consumption (kWh)")
+
+
+ggsave("~/GitHub/household_energy_consumption/plots/county_plot.png", county_plot, width = 10, height = 8, dpi = 300)
+
 ```
