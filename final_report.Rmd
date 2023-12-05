@@ -350,7 +350,7 @@ panel_data <- pdata.frame(data, index = c("county_id", "time"))
 panel_model <- plm(total_electricity ~ temperature, 
                 data = panel_data, 
                 model = "within")
-stargazer(panel_model, type = "latex",header = "Regression summary of panel model with fixed effects")
+stargazer(panel_model, type = "latex", header = TRUE, title = "Regression Summary of Panel Model with Fixed Effects")
 
 
 ```
@@ -510,6 +510,8 @@ knitr::kable(data.frame(Feature = selected_features))
 ```
 
 # Annex 2 {#annex2}
+
+Contributions of each team member:
 
 - **Francisco Franco Arenas:**
   - Design, coding, and execution of the pipeline to load and merge the data.
