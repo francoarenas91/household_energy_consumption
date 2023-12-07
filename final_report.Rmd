@@ -308,7 +308,7 @@ house_data %>%
 
 With the engineered features, we replicate the previous random forest to get more precise insights on the feature importance. The most important features remain the same. The ACH50 insulation is the only category in wich changes can be made to affect electricity consumption, as most other important features are inmutabe (such as floor area or number of rooms).
 
-![Feature importance of refined model](plots/feature_importance_1.png)
+![Feature importance of refined model](plots/feature_importance_2.png)
 
 # 4. Building a Model for Prediction
 
@@ -486,6 +486,8 @@ Reducing electricity demand presents challenges, particularly because it often h
 However, the most impactful strategy for reducing electricity consumption may lie in altering household consumption patterns. Practical measures might include reducing air conditioning usage or adjusting the set temperature. Yet, influencing consumer behavior poses significant challenges from a policy standpoint. It demands a justification for why such behavioral changes are preferable to augmenting production capacity. From our perspective, expanding production capacity, especially with the decreasing costs of renewable energy installations, appears less burdensome than enforcing specific consumption patterns.
 
 A critical caveat in our analysis is the exclusion of electricity prices. Our assessment assumes constant demand, which does not reflect the reality of fluctuating electricity prices, especially in scenarios where no new capacity is installed. As electricity becomes costlier, consumers may need to adjust their usage to manage expenses. Notably, air conditioning—one of the most price-sensitive forms of electricity consumption—may see reduced usage in response to higher prices. Additionally, increased electricity prices could make household photovoltaic production more financially viable. It is important to note that peak hours for photovoltaic production often coincide with higher temperatures, thus aligning with increased air conditioning use.
+
+A second caveat, stems from the assumption of treating counties and, by extension, the dwellings within them as static entities. This oversimplification overlooks the endogenous relationship between rising temperatures and consumer behavior. As temperatures climb, it's plausible for inhabitants to adapt by increasing the installation of air conditioners, ventilation systems, and other cooling appliances. This behavioral adaptation can significantly alter electricity consumption patterns, rendering our current analysis, which does not account for these dynamic changes, potentially less relevant or accurate. 
 
 In conclusion, electricity prices are crucial signals of market scarcity. Allowing these prices to provide clear signals is essential. Consequently, reforms aimed at reducing inefficiencies, liberalizing markets, and minimizing administrative and regulatory barriers are critical for the efficient functioning of the electricity market. In a scenario where the market is liberalized and prices accurately reflect demand and supply, higher prices could naturally drive new consumption patterns while encouraging increased production from both households and energy providers.
 
