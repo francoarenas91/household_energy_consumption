@@ -521,3 +521,14 @@ Contributions of each team member:
   - Feature engineering and feature importance analysis.
   - Development of prediction models.
   - Elaboration of the final report.
+- **Ayush Thoniparambil Saseendran:**
+  - Data transformation
+  - Development and publication of shiny App
+- **Collin Joseph Kneiss:**
+  - Collaboration of Project Design
+  - Development of Presentation
+  - Elaboration of Project to Company
+- **Prakruti Pruthvi Kumar:**
+  - Elaboration of presentation
+  - Development of shiny app
+  
